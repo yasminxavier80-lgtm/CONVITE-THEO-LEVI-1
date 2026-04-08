@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lista de Presentes — Theo Levi</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+<style>
+  *{margin:0;padding:0;box-sizing:border-box;}
+  body{
+    min-height:100vh;
+    background:linear-gradient(160deg,#d8eaf7 0%,#e8f4fd 40%,#f0f8ff 70%,#ddeef8 100%);
+    font-family:'Lato',sans-serif;
+    padding:0 0 80px;
+  }
+
+  /* HEADER */
+  .header{
+    background:linear-gradient(180deg,#b8d9f0 0%,#d4eaf9 70%,rgba(212,234,249,0) 100%);
+    text-align:center;
+    padding:36px 24px 24px;
+    position:relative;
+    overflow:hidden;
+  }
+  .cloud{position:absolute;background:rgba(255,255,255,0.7);border-radius:50px;}
+  .cloud::before,.cloud::after{content:'';position:absolute;background:rgba(255,255,255,0.7);border-radius:50%;}
+  .c1{width:90px;height:30px;top:10px;left:0;}
+  .c1::before{width:50px;height:50px;top:-24px;left:12px;}
+  .c1::after{width:34px;height:34px;top:-14px;left:40px;}
+  .c2{width:70px;height:24px;top:6px;right:20px;}
+  .c2::before{width:40px;height:40px;top:-20px;left:8px;}
+  .c2::after{width:26px;height:26px;top:-12px;left:30px;}
+  .plane-deco{font-size:32px;display:block;margin-bottom:8px;animation:fly 3s ease-in-out infinite alternate;}
+  @keyframes fly{from{transform:translateY(0) rotate(-3deg);}to{transform:translateY(-8px) rotate(3deg);}}
+  .header-title{font-family:'Playfair Display',serif;font-size:30px;color:#2a6490;margin-bottom:4px;}
+  .header-sub{font-family:'Playfair Display',serif;font-size:16px;color:#5b9bbf;font-style:italic;}
+  .header-tag{display:inline-block;background:rgba(255,255,255,0.7);border:1px solid rgba(100,175,230,0.4);color:#1c4f7a;font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;padding:5px 18px;border-radius:50px;margin-bottom:12px;}
+
+  /* PROGRESS */
+  .progress-wrap{max-width:600px;margin:0 auto;padding:20px 20px 0;}
+  .progress-label{display:flex;justify-content:space-between;font-size:12px;color:#5b9bbf;margin-bottom:6px;}
+  .progress-bar-bg{background:rgba(255,255,255,0.6);border-radius:20px;height:10px;border:1px solid rgba(100,175,230,0.3);}
+  .progress-bar-fill{background:linear-gradient(90deg,#7aafd4,#9fc8e8);border-radius:20px;height:100%;transition:width 0.5s ease;}
+  .progress-count{text-align:center;font-family:'Playfair Display',serif;font-size:18px;color:#2a6490;margin-top:8px;}
+
+  /* FILTER */
+  .filter-row{max-width:600px;margin:16px auto 0;padding:0 20px;display:flex;gap:8px;flex-wrap:wrap;}
+  .filter-btn{background:rgba(255,255,255,0.7);border:1.5px solid rgba(100,175,230,0.4);color:#2a6490;font-size:12px;font-weight:700;padding:6px 16px;border-radius:50px;cursor:pointer;transition:all 0.2s;letter-spacing:0.5px;}
+  .filter-btn.active,.filter-btn:hover{background:#7aafd4;border-color:#7aafd4;color:#fff;}
+
+  /* GIFT LIST */
+  .list-wrap{max-width:600px;margin:20px auto 0;padding:0 20px;display:flex;flex-direction:column;gap:10px;}
+
+  .gift-card{
+    background:rgba(255,255,255,0.82);
+    border-radius:16px;
+    border:1.5px solid rgba(180,215,245,0.6);
+    padding:14px 18px;
+    display:flex;
+    align-items:center;
+    gap:14px;
+    transition:all 0.25s;
+    box-shadow:0 2px 8px rgba(100,160,220,0.06);
+  }
+  .gift-card.taken{
+    background:rgba(240,248,240,0.82);
+    border-color:rgba(100,200,130,0.4);
+    opacity:0.75;
+  }
+  .gift-card.taken .gift-title{text-decoration:line-through;color:#999;}
+  .gift-card.locked{
+    background:rgba(248,240,240,0.82);
+    border-color:rgba(200,100,100,0.3);
+    opacity:0.65;
+  }
+  .gift-icon{width:40px;height:40px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;}
+  .gift-info{flex:1;}
+  .gift-title{font-family:'Playfair Display',serif;font-size:15px;color:#2a6490;font-weight:600;}
+  .gift-badge{display:inline-block;font-size:10px;font-weight:700;letter-spacing:1px;padding:2px 10px;border-radius:50px;margin-top:3px;}
+  .badge-p{background:#e8f4fd;color:#2a6490;}
+  .badge-m{background:#e8f0fd;color:#4a2a90;}
+  .badge-g{background:#fde8f4;color:#902a6a;}
+  .gift-status{font-size:11px;color:#7aadcc;margin-top:2px;}
+  .gift-status.ok{color:#4caf7a;}
+  .gift-status.locked{color:#e07070;}
+
+  .claim-btn{
+    background:linear-gradient(135deg,#7aafd4,#5b9bbf);
+    color:#fff;font-size:12px;font-weight:700;
+    padding:8px 16px;border-radius:50px;border:none;cursor:pointer;
+    transition:all 0.2s;white-space:nowrap;
+  }
+  .claim-btn:hover{transform:translateY(-1px);box-shadow:0 4px 12px rgba(100,175,230,0.35);}
+  .claim-btn:disabled{background:#ccc;cursor:default;transform:none;box-shadow:none;}
+
+  /* MODAL */
+  .overlay{position:fixed;inset:0;background:rgba(0,0,0,0.45);display:none;align-items:center;justify-content:center;z-index:100;padding:20px;}
+  .overlay.open{display:flex;}
+  .modal{background:#fff;border-radius:24px;padding:28px 28px 24px;max-width:380px;width:100%;text-align:center;box-shadow:0 16px 48px rgba(0,0,0,0.18);animation:pop 0.25s ease both;}
+  @keyframes pop{from{transform:scale(0.85);opacity:0;}to{transform:scale(1);opacity:1;}}
+  .modal-icon{font-size:40px;margin-bottom:12px;}
+  .modal-title{font-family:'Playfair Display',serif;font-size:20px;color:#2a6490;margin-bottom:6px;}
+  .modal-sub{font-size:13px;color:#7aadcc;margin-bottom:18px;line-height:1.5;}
+  .modal-input{width:100%;border:1.5px solid rgba(100,175,230,0.4);border-radius:12px;padding:10px 14px;font-size:14px;font-family:'Lato',sans-serif;color:#2a6490;outline:none;margin-bottom:14px;background:#f4f9fd;}
+  .modal-input:focus{border-color:#7aafd4;}
+  .modal-btn{width:100%;background:linear-gradient(135deg,#7aafd4,#5b9bbf);color:#fff;font-size:14px;font-weight:700;padding:12px;border-radius:50px;border:none;cursor:pointer;margin-bottom:8px;transition:all 0.2s;}
+  .modal-btn:hover{opacity:0.9;}
+  .modal-cancel{font-size:12px;color:#aaa;cursor:pointer;text-decoration:underline;}
+  .modal-cancel:hover{color:#888;}
+
+  /* ADMIN PANEL */
+  .admin-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.55);display:none;align-items:center;justify-content:center;z-index:200;padding:20px;}
+  .admin-overlay.open{display:flex;}
+  .admin-modal{background:#1a2a3a;border-radius:24px;padding:28px;max-width:500px;width:100%;max-height:90vh;overflow-y:auto;box-shadow:0 20px 60px rgba(0,0,0,0.4);animation:pop 0.25s ease both;}
+  .admin-title{font-family:'Playfair Display',serif;font-size:22px;color:#7aafd4;margin-bottom:4px;}
+  .admin-sub{font-size:12px;color:#5b8fa8;margin-bottom:20px;letter-spacing:1px;}
+  .admin-badge{display:inline-block;background:#7aafd4;color:#fff;font-size:10px;font-weight:700;padding:3px 10px;border-radius:50px;margin-left:8px;vertical-align:middle;}
+  .admin-gift-row{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid rgba(255,255,255,0.06);}
+  .admin-gift-row:last-child{border-bottom:none;}
+  .admin-gift-name{flex:1;font-size:13px;color:#c8dff0;}
+  .admin-gift-status-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
+  .dot-free{background:#4caf7a;}
+  .dot-taken{background:#4caf7a;opacity:0.4;}
+  .dot-locked{background:#e07070;}
+  .admin-toggle{background:transparent;border:1.5px solid rgba(100,175,230,0.4);color:#7aafd4;font-size:11px;font-weight:700;padding:5px 12px;border-radius:50px;cursor:pointer;transition:all 0.2s;white-space:nowrap;}
+  .admin-toggle:hover{background:#7aafd4;color:#fff;}
+  .admin-toggle.unlock{border-color:rgba(100,220,130,0.5);color:#4caf7a;}
+  .admin-toggle.unlock:hover{background:#4caf7a;color:#fff;}
+  .admin-toggle.lock{border-color:rgba(220,100,100,0.5);color:#e07070;}
+  .admin-toggle.lock:hover{background:#e07070;color:#fff;}
+  .admin-close{width:100%;background:transparent;border:1.5px solid rgba(100,175,230,0.3);color:#7aafd4;font-size:13px;font-weight:700;padding:10px;border-radius:50px;cursor:pointer;margin-top:16px;transition:all 0.2s;}
+  .admin-close:hover{background:#7aafd4;color:#fff;}
+  .admin-stats{display:flex;gap:10px;margin-bottom:16px;}
+  .admin-stat{flex:1;background:rgba(255,255,255,0.05);border-radius:12px;padding:10px;text-align:center;}
+  .admin-stat-num{font-size:22px;font-weight:700;color:#7aafd4;}
+  .admin-stat-label{font-size:10px;color:#5b8fa8;letter-spacing:1px;}
+
+  /* LOGIN */
+  .login-modal{background:#1a2a3a;border-radius:24px;padding:32px 28px;max-width:340px;width:100%;text-align:center;animation:pop 0.25s ease both;}
+  .login-title{font-family:'Playfair Display',serif;font-size:22px;color:#7aafd4;margin-bottom:6px;}
+  .login-sub{font-size:12px;color:#5b8fa8;margin-bottom:22px;letter-spacing:1px;}
+  .login-icon{font-size:36px;margin-bottom:12px;display:block;}
+  .login-input{width:100%;background:rgba(255,255,255,0.08);border:1.5px solid rgba(100,175,230,0.25);border-radius:12px;padding:11px 14px;font-size:14px;color:#c8dff0;outline:none;margin-bottom:12px;font-family:'Lato',sans-serif;}
+  .login-input:focus{border-color:#7aafd4;}
+  .login-input::placeholder{color:#4a6a80;}
+  .login-btn{width:100%;background:linear-gradient(135deg,#5b9bbf,#7aafd4);color:#fff;font-size:14px;font-weight:700;padding:12px;border-radius:50px;border:none;cursor:pointer;margin-bottom:8px;transition:all 0.2s;}
+  .login-btn:hover{opacity:0.9;}
+  .login-err{color:#e07070;font-size:12px;margin-top:4px;min-height:16px;}
+  .login-cancel{font-size:12px;color:#5b8fa8;cursor:pointer;margin-top:4px;display:inline-block;}
+  .login-cancel:hover{color:#7aafd4;}
+
+  /* FOOTER */
+  footer{text-align:center;padding:28px 20px 16px;position:relative;}
+  .footer-hearts{color:#b8d9f0;font-size:14px;letter-spacing:4px;display:block;margin-bottom:8px;}
+  .footer-copy{font-size:11px;color:#7aadcc;font-style:italic;}
+  .admin-link{font-size:10px;color:rgba(100,175,230,0.35);cursor:pointer;margin-top:10px;display:inline-block;letter-spacing:1px;text-decoration:none;transition:color 0.2s;}
+  .admin-link:hover{color:rgba(100,175,230,0.7);}
+
+  /* SUCCESS toast */
+  .toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(80px);background:#2a6490;color:#fff;font-size:13px;font-weight:700;padding:12px 24px;border-radius:50px;box-shadow:0 8px 24px rgba(0,0,0,0.2);z-index:300;transition:transform 0.4s ease;pointer-events:none;}
+  .toast.show{transform:translateX(-50%) translateY(0);}
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="header">
+  <div class="cloud c1"></div>
+  <div class="cloud c2"></div>
+  <div class="header-tag">✈ Chá de Fraldas ✈</div>
+  <span class="plane-deco">🛩️</span>
+  <div class="header-title">Lista de Presentes</div>
+  <div class="header-sub">Theo Levi está chegando!</div>
+</div>
+
+<!-- PROGRESS -->
+<div class="progress-wrap">
+  <div class="progress-label">
+    <span>Presentes escolhidos</span>
+    <span id="pct">0%</span>
+  </div>
+  <div class="progress-bar-bg">
+    <div class="progress-bar-fill" id="bar" style="width:0%"></div>
+  </div>
+  <div class="progress-count" id="pcount"></div>
+</div>
+
+<!-- FILTER -->
+<div class="filter-row">
+  <button class="filter-btn active" onclick="setFilter('todos',this)">Todos</button>
+  <button class="filter-btn" onclick="setFilter('P',this)">Fralda P</button>
+  <button class="filter-btn" onclick="setFilter('M',this)">Fralda M</button>
+  <button class="filter-btn" onclick="setFilter('G',this)">Fralda G</button>
+  <button class="filter-btn" onclick="setFilter('livre',this)">Disponíveis</button>
+</div>
+
+<!-- GIFT LIST -->
+<div class="list-wrap" id="giftList"></div>
+
+<!-- FOOTER -->
+<footer>
+  <span class="footer-hearts">♡ ♡ ♡</span>
+  <span class="footer-copy">Com amor, Luanderson & Thaina 💙</span><br>
+  <span class="admin-link" onclick="openAdminLogin()">admin</span>
+</footer>
+
+<!-- CLAIM MODAL -->
+<div class="overlay" id="claimOverlay">
+  <div class="modal">
+    <div class="modal-icon">🎁</div>
+    <div class="modal-title" id="claimTitle">Reservar presente</div>
+    <div class="modal-sub">Deixa seu nome para reservarmos este presente para você! 🥰</div>
+    <input class="modal-input" id="claimName" placeholder="Seu nome completo" maxlength="60"/>
+    <button class="modal-btn" onclick="confirmClaim()">Confirmar reserva ✈️</button>
+    <div class="modal-cancel" onclick="closeClaimModal()">Cancelar</div>
+  </div>
+</div>
+
+<!-- ADMIN LOGIN MODAL -->
+<div class="admin-overlay" id="loginOverlay">
+  <div class="login-modal">
+    <span class="login-icon">🔒</span>
+    <div class="login-title">Área Admin</div>
+    <div class="login-sub">ACESSO RESTRITO</div>
+    <input class="login-input" id="loginUser" placeholder="Usuário" autocomplete="off"/>
+    <input class="login-input" id="loginPass" placeholder="Senha" type="password" onkeydown="if(event.key==='Enter')doLogin()"/>
+    <div class="login-err" id="loginErr"></div>
+    <button class="login-btn" onclick="doLogin()">Entrar</button>
+    <span class="login-cancel" onclick="closeLogin()">Cancelar</span>
+  </div>
+</div>
+
+<!-- ADMIN PANEL MODAL -->
+<div class="admin-overlay" id="adminOverlay">
+  <div class="admin-modal">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px;">
+      <div class="admin-title">Painel Admin <span class="admin-badge">✓ Logado</span></div>
+      <span style="cursor:pointer;color:#5b8fa8;font-size:18px;" onclick="closeAdmin()">✕</span>
+    </div>
+    <div class="admin-sub">GERENCIAR LISTA DE PRESENTES</div>
+    <div class="admin-stats">
+      <div class="admin-stat"><div class="admin-stat-num" id="adTotal">0</div><div class="admin-stat-label">TOTAL</div></div>
+      <div class="admin-stat"><div class="admin-stat-num" id="adTaken">0</div><div class="admin-stat-label">ESCOLHIDOS</div></div>
+      <div class="admin-stat"><div class="admin-stat-num" id="adLocked">0</div><div class="admin-stat-label">BLOQUEADOS</div></div>
+      <div class="admin-stat"><div class="admin-stat-num" id="adFree">0</div><div class="admin-stat-label">LIVRES</div></div>
+    </div>
+    <div id="adminList"></div>
+    <button class="admin-close" onclick="closeAdmin()">Fechar painel</button>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast">✈️ Presente reservado!</div>
+
+<script>
+const ADMIN_USER = 'admin';
+const ADMIN_PASS = 'TheoLevi@2026';
+const STORAGE_KEY = 'theolevi_gifts';
+
+const giftsBase = [
+  {id:1,label:'Fralda P + lenço',size:'P',icon:'🧻'},
+  {id:2,label:'Fralda P + lenço',size:'P',icon:'🧻'},
+  {id:3,label:'Fralda P + lenço',size:'P',icon:'🧻'},
+  {id:4,label:'Fralda P + lenço',size:'P',icon:'🧻'},
+  {id:5,label:'Fralda P + lenço',size:'P',icon:'🧻'},
+  {id:6,label:'Fralda P + lenço',size:'P',icon:'🧻'},
+  {id:7,label:'Fralda P + lenço',size:'P',icon:'🧻'},
+  {id:8,label:'Fralda P + roupinha',size:'P',icon:'👕'},
+  {id:9,label:'Fralda P + roupinha',size:'P',icon:'👕'},
+  {id:10,label:'Fralda P + roupinha',size:'P',icon:'👕'},
+  {id:11,label:'Fralda P + roupinha',size:'P',icon:'👕'},
+  {id:12,label:'Fralda P + roupinha',size:'P',icon:'👕'},
+  {id:13,label:'Fralda M + shampoo',size:'M',icon:'🧴'},
+  {id:14,label:'Fralda M + shampoo',size:'M',icon:'🧴'},
+  {id:15,label:'Fralda M + shampoo',size:'M',icon:'🧴'},
+  {id:16,label:'Fralda M + shampoo',size:'M',icon:'🧴'},
+  {id:17,label:'Fralda M + shampoo',size:'M',icon:'🧴'},
+  {id:18,label:'Fralda M + shampoo',size:'M',icon:'🧴'},
+  {id:19,label:'Fralda M + condicionador',size:'M',icon:'💆'},
+  {id:20,label:'Fralda M + condicionador',size:'M',icon:'💆'},
+  {id:21,label:'Fralda M + condicionador',size:'M',icon:'💆'},
+  {id:22,label:'Fralda M + condicionador',size:'M',icon:'💆'},
+  {id:23,label:'Fralda M + condicionador',size:'M',icon:'💆'},
+  {id:24,label:'Fralda M + perfume',size:'M',icon:'🌸'},
+  {id:25,label:'Fralda M + perfume',size:'M',icon:'🌸'},
+  {id:26,label:'Fralda M + perfume',size:'M',icon:'🌸'},
+  {id:27,label:'Fralda M + perfume',size:'M',icon:'🌸'},
+  {id:28,label:'Fralda M + perfume',size:'M',icon:'🌸'},
+  {id:29,label:'Fralda G + perfume',size:'G',icon:'🌸'},
+  {id:30,label:'Fralda G + perfume',size:'G',icon:'🌸'},
+  {id:31,label:'Fralda G + perfume',size:'G',icon:'🌸'},
+  {id:32,label:'Fralda G + perfume',size:'G',icon:'🌸'},
+  {id:33,label:'Fralda G + perfume',size:'G',icon:'🌸'},
+  {id:34,label:'Fralda G + sabonete líquido',size:'G',icon:'🫧'},
+  {id:35,label:'Fralda G + sabonete líquido',size:'G',icon:'🫧'},
+  {id:36,label:'Fralda G + sabonete líquido',size:'G',icon:'🫧'},
+  {id:37,label:'Fralda G + sabonete líquido',size:'G',icon:'🫧'},
+  {id:38,label:'Fralda G + sabonete líquido',size:'G',icon:'🫧'},
+  {id:39,label:'Fralda G + sabonete líquido',size:'G',icon:'🫧'},
+  {id:40,label:'Fralda G + sabonete líquido',size:'G',icon:'🫧'},
+  {id:41,label:'Fralda G + roupinha',size:'G',icon:'👚'},
+  {id:42,label:'Fralda G + roupinha',size:'G',icon:'👚'},
+  {id:43,label:'Fralda G + roupinha',size:'G',icon:'👚'},
+  {id:44,label:'Fralda G + roupinha',size:'G',icon:'👚'},
+  {id:45,label:'Fralda G + roupinha',size:'G',icon:'👚'},
+  {id:46,label:'Fralda G + sabonete',size:'G',icon:'🧼'},
+  {id:47,label:'Fralda G + sabonete',size:'G',icon:'🧼'},
+  {id:48,label:'Fralda G + sabonete',size:'G',icon:'🧼'},
+  {id:49,label:'Fralda G + sabonete',size:'G',icon:'🧼'},
+  {id:50,label:'Fralda G + sabonete',size:'G',icon:'🧼'},
+];
+
+let state = {};
+let currentFilter = 'todos';
+let claimingId = null;
+
+function loadState(){
+  try{ state = JSON.parse(localStorage.getItem(STORAGE_KEY)) || {}; }
+  catch(e){ state = {}; }
+}
+function saveState(){ localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); }
+
+function getGiftState(id){
+  return state[id] || {status:'free',by:''};
+}
+
+function iconBg(size){
+  if(size==='P') return '#e8f4fd';
+  if(size==='M') return '#ede8fd';
+  return '#fde8f4';
+}
+
+function renderList(){
+  const list = document.getElementById('giftList');
+  list.innerHTML = '';
+  let taken=0, visible=0;
+  giftsBase.forEach(g=>{
+    const gs = getGiftState(g.id);
+    const match = currentFilter==='todos' || currentFilter===g.size || (currentFilter==='livre' && gs.status==='free');
+    if(!match) return;
+    visible++;
+    if(gs.status==='taken') taken++;
+
+    const card = document.createElement('div');
+    card.className = 'gift-card' + (gs.status==='taken'?' taken':'') + (gs.status==='locked'?' locked':'');
+
+    const iconDiv = `<div class="gift-icon" style="background:${iconBg(g.size)}">${g.icon}</div>`;
+    const badge = `<span class="gift-badge badge-${g.size.toLowerCase()}">${g.size}</span>`;
+    let statusText = '';
+    if(gs.status==='taken') statusText = `<div class="gift-status ok">✓ Escolhido por ${gs.by}</div>`;
+    else if(gs.status==='locked') statusText = `<div class="gift-status locked">🔒 Indisponível no momento</div>`;
+    else statusText = `<div class="gift-status">Disponível ✨</div>`;
+
+    let btn = '';
+    if(gs.status==='free') btn = `<button class="claim-btn" onclick="openClaim(${g.id},'${g.label.replace(/'/g,"\\'")}')">Escolher</button>`;
+    else if(gs.status==='taken') btn = `<button class="claim-btn" disabled>Reservado</button>`;
+    else btn = `<button class="claim-btn" disabled style="background:#e0c0c0">Indisponível</button>`;
+
+    card.innerHTML = `${iconDiv}<div class="gift-info"><div class="gift-title">${g.label} ${badge}</div>${statusText}</div>${btn}`;
+    list.appendChild(card);
+  });
+
+  const total = giftsBase.length;
+  const totalTaken = giftsBase.filter(g=>getGiftState(g.id).status==='taken').length;
+  const pct = Math.round((totalTaken/total)*100);
+  document.getElementById('bar').style.width = pct+'%';
+  document.getElementById('pct').textContent = pct+'%';
+  document.getElementById('pcount').textContent = `${totalTaken} de ${total} presentes escolhidos 🎁`;
+}
+
+function setFilter(f, btn){
+  currentFilter = f;
+  document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  renderList();
+}
+
+let claimLabel = '';
+function openClaim(id, label){
+  claimingId = id;
+  claimLabel = label;
+  document.getElementById('claimTitle').textContent = label;
+  document.getElementById('claimName').value = '';
+  document.getElementById('claimOverlay').classList.add('open');
+  setTimeout(()=>document.getElementById('claimName').focus(),200);
+}
+function closeClaimModal(){
+  document.getElementById('claimOverlay').classList.remove('open');
+  claimingId = null;
+}
+function confirmClaim(){
+  const name = document.getElementById('claimName').value.trim();
+  if(!name){ document.getElementById('claimName').style.borderColor='#e07070'; return; }
+  state[claimingId] = {status:'taken', by: name};
+  saveState();
+  closeClaimModal();
+  renderList();
+  showToast(`🎁 "${claimLabel}" reservado por ${name}!`);
+}
+
+function showToast(msg){
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'), 3200);
+}
+
+// ADMIN
+function openAdminLogin(){
+  document.getElementById('loginErr').textContent='';
+  document.getElementById('loginUser').value='';
+  document.getElementById('loginPass').value='';
+  document.getElementById('loginOverlay').classList.add('open');
+  setTimeout(()=>document.getElementById('loginUser').focus(),200);
+}
+function closeLogin(){ document.getElementById('loginOverlay').classList.remove('open'); }
+function doLogin(){
+  const u = document.getElementById('loginUser').value.trim();
+  const p = document.getElementById('loginPass').value;
+  if(u===ADMIN_USER && p===ADMIN_PASS){
+    closeLogin();
+    openAdmin();
+  } else {
+    document.getElementById('loginErr').textContent = '⚠ Usuário ou senha incorretos.';
+  }
+}
+function openAdmin(){
+  renderAdminList();
+  document.getElementById('adminOverlay').classList.add('open');
+}
+function closeAdmin(){ document.getElementById('adminOverlay').classList.remove('open'); }
+function renderAdminList(){
+  const total = giftsBase.length;
+  const taken = giftsBase.filter(g=>getGiftState(g.id).status==='taken').length;
+  const locked = giftsBase.filter(g=>getGiftState(g.id).status==='locked').length;
+  const free = total - taken - locked;
+  document.getElementById('adTotal').textContent = total;
+  document.getElementById('adTaken').textContent = taken;
+  document.getElementById('adLocked').textContent = locked;
+  document.getElementById('adFree').textContent = free;
+
+  const al = document.getElementById('adminList');
+  al.innerHTML = '';
+  giftsBase.forEach(g=>{
+    const gs = getGiftState(g.id);
+    const row = document.createElement('div');
+    row.className = 'admin-gift-row';
+    let dotClass = 'dot-free';
+    if(gs.status==='taken') dotClass='dot-taken';
+    if(gs.status==='locked') dotClass='dot-locked';
+    let nameInfo = gs.status==='taken' ? ` <span style="color:#4caf7a;font-size:11px;">— ${gs.by}</span>` : '';
+    let toggleBtn = '';
+    if(gs.status==='free'){
+      toggleBtn = `<button class="admin-toggle lock" onclick="adminLock(${g.id})">Bloquear</button>`;
+    } else if(gs.status==='locked'){
+      toggleBtn = `<button class="admin-toggle unlock" onclick="adminUnlock(${g.id})">Liberar</button>`;
+    } else {
+      toggleBtn = `<button class="admin-toggle unlock" onclick="adminFree(${g.id})">Liberar</button>`;
+    }
+    row.innerHTML = `<div class="admin-gift-status-dot ${dotClass}"></div><div class="admin-gift-name">#${g.id} ${g.label} (${g.size})${nameInfo}</div>${toggleBtn}`;
+    al.appendChild(row);
+  });
+}
+function adminLock(id){ state[id]={status:'locked',by:''}; saveState(); renderAdminList(); renderList(); }
+function adminUnlock(id){ delete state[id]; saveState(); renderAdminList(); renderList(); }
+function adminFree(id){ delete state[id]; saveState(); renderAdminList(); renderList(); }
+
+// INIT
+loadState();
+renderList();
+</script>
+</body>
+</html>
